@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AZF-TV</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles_neo_final_v2.css"/>
+</head>
+<body>
+
+  <div id="overlay">
+    <div id="clock"></div>
+    <div class="glass-header">
+      <h1 class="tv-title">AZF‑TV <span>LIVE</span></h1>
+      <p class="subtitle">Mobilität bei uns erleben</p>
+    </div>
+
+    <div id="player"><video id="video" autoplay muted></video></div>
+    <div id="image-display"><img id="image" src="" alt="Bild" /></div>
+    <div id="weather">
+      <iframe width='300' height='365' src='https://api.wetteronline.de/wetterwidget?gid=10033&modeid=FC3&seourl=flensburg&locationname=Flensburg&lang=de'></iframe>
+    </div>
+    <div id="news">
+      <script>
+var jsnewsconf = {"bd":"000000","bg":"ffffff","hl":"333333","hb":"cc0000","lk":"000000"};
+</script>
+<script src="https://rp-online.de/app/feed/jsnews.js/topnews/468x60">
+</script><noscript>Quelle:<a href="https://rp-online.de/">RP ONLINE</a></noscript>
+    </div>
+
+    <div id="google-reviews" style="display:none;">
+      <div class="elfsight-app-90a161ab-557a-43dd-9269-b3df2700e85f" data-elfsight-app-lazy></div>
+    </div>
+
+    <div id="ticker">
+      <span id="ticker-text">👋 Willkommen bei AZF! 🚗 Entdecken Sie unsere Angebote und Services.</span>
+    </div>
+  </div>
+
+  <script>
+    const mediaItems = [
+      { type: 'video', src: 'Video5.mp4' },
+      { type: 'google-reviews' }, 
+      { type: 'weather' },
+      { type: 'image', src: 'grün.jpg' },
+      { type: 'video', src: 'tiguan.mp4' },
+      { type: 'news' },
+      { type: 'google-reviews' }, 
+      { type: 'video', src: 'Video2.mp4' },
+      { type: 'image', src: 'zero.jpg' },
+      { type: 'weather' },
+      { type: 'video', src: 'Video1.mp4' },
+      { type: 'news' },
+      { type: 'google-reviews' },
+      { type: 'video', src: 't-roc.mp4' },
+      { type: 'image', src: 'calli.jpg' },
+      { type: 'google-reviews' }, 
+      { type: 'weather' },
+      { type: 'image', src: 'jahr.jpg' },
+      { type: 'video', src: 'tiguan.mp4' },
+      { type: 'news' },
+      { type: 'google-reviews' }, 
+      { type: 'video', src: 'Video3.mp4' },
+      { type: 'image', src: 'nu.jpg' },
+      { type: 'weather' },
+      { type: 'video', src: 'Video4.mp4' },
+      { type: 'news' },
+      { type: 'google-reviews' },
+      { type: 'video', src: 't-roc.mp4' },
+      { type: 'image', src: 'calli.jpg' },
+      { type: 'video', src: 'Video6.mp4' }
+    ];
+
+    function hideHeaderClock() {
+      document.getElementById('clock')?.classList.add('hidden');
+      document.querySelector('.glass-header')?.classList.add('hidden');
+    }
+
+    function showHeaderClock() {
+      document.getElementById('clock')?.classList.remove('hidden');
+      document.querySelector('.glass-header')?.classList.remove('hidden');
+    }
+
+    let shuffledItems = [...mediaItems].sort(() => 0.5 - Math.random());
+    let index = 0;
+
+    function hideAll() {
+      document.getElementById('player').style.opacity = 0;
+      document.getElementById('image-display').style.opacity = 0;
+      document.getElementById('weather').style.opacity = 0;
+      document.getElementById('news').style.opacity = 0;
+      document.getElementById('google-reviews').style.opacity = 0;
+
+      setTimeout(() => {
+        document.getElementById('player').style.display = 'none';
+        document.getElementById('image-display').style.display = 'none';
+        document.getElementById('weather').style.display = 'none';
+        document.getElementById('news').style.display = 'none';
+        document.getElementById('google-reviews').style.display = 'none';
+      }, 500);
+    }
+
+    function showNextItem() {
+      const item = shuffledItems[index];
+      hideAll();
+
+      setTimeout(() => {
+        if (item.type === 'image') {
+          hideHeaderClock();
+          document.getElementById('image').src = item.src;
+          const el = document.getElementById('image-display');
+          el.style.display = 'flex';
+          el.style.opacity = 1;
+          setTimeout(() => {
+            showHeaderClock();
+            showNextItem();
+          }, 8000);
+        }
+
+        if (item.type === 'video') {
+          hideHeaderClock();
+          const video = document.getElementById('video');
+          video.src = item.src;
+          video.onended = showNextItem;
+          video.onerror = () => {
+            console.error("Fehler beim Abspielen:", item.src);
+            showNextItem();
+          };
+          const el = document.getElementById('player');
+          el.style.display = 'flex';
+          el.style.opacity = 1;
+          video.play().catch(() => setTimeout(showNextItem, 8000));
+        }
+
+if (item.type === 'weather') {
+  document.querySelector('.glass-header')?.classList.add('hidden'); // Header ausblenden
+  document.getElementById('clock')?.classList.remove('hidden');     // Uhr eingeblendet lassen
+  const el = document.getElementById('weather');
+  el.style.display = 'flex';
+  el.style.opacity = 1;
+  setTimeout(() => {
+    document.querySelector('.glass-header')?.classList.remove('hidden'); // Header zurück
+    showNextItem();
+  }, 10000);
+}
+
+        if (item.type === 'news') {
+          showHeaderClock();
+          const el = document.getElementById('news');
+          el.style.display = 'flex';
+          el.style.opacity = 1;
+          setTimeout(showNextItem, 10000);
+        }
+
+        if (item.type === 'google-reviews') {
+          hideHeaderClock();
+          const el = document.getElementById('google-reviews');
+          el.style.display = 'flex';
+          el.style.opacity = 1;
+          setTimeout(showNextItem, 10000);
+        }
+
+        index++;
+        if (index >= shuffledItems.length) {
+          index = 0;
+          shuffledItems = [...mediaItems].sort(() => 0.5 - Math.random());
+        }
+      }, 500);
+    }
+
+    window.onload = showNextItem;
+
+    const tickerMessages = [
+      "👋 Herzlich Willkommen bei der AZF-Unternehmensgruppe! 🚗",
+      "🌟 Schön, dass Sie da sind! Wir wünschen einen tollen Tag! 😄",
+      "🅿️ Bitte wenden Sie sich bei Fragen an unser Team! 📞",
+      "🛠️ Werkstatt geöffnet von 06:00–20:00 Uhr – Jetzt Termin sichern! 📅",
+      "🔍 Inspektion fällig? Vereinbaren Sie Ihren Servicetermin noch heute! 🧰",
+      "📋 Bringen Sie Ihre Zulassungsunterlagen bitte vollständig mit! 📄",
+      "📌 Bitte halten Sie Ihre EVB-Nummer bereit! 🔐",
+      "🔥 Sonderleasing T-Roc! Jetzt informieren! 🤑",
+      "🎁 ID. Familie Probefahrt sichern – jetzt anmelden! ⚡",
+      "💸 Wir kaufen Ihr Auto – fair und transparent! 💬",
+      "🚨❗ Bitte beachten: Am Samstag befindet sich die Serviceannahme im Audi Gebäude ❗🚨",
+      "📲 Folgen Sie uns auf Instagram für aktuelle News! 📸",
+      "💧 Kaffee & Wasser finden Sie in der Wartezone! ☕"
+    ];
+
+    let tickerIndex = 1;
+    function rotateTicker() {
+      const tickerText = document.getElementById("ticker-text");
+      tickerText.style.animation = "none";
+      void tickerText.offsetWidth;
+      tickerText.style.animation = null;
+      tickerText.textContent = tickerMessages[tickerIndex];
+      tickerIndex = (tickerIndex + 1) % tickerMessages.length;
+      setTimeout(rotateTicker, 20000);
+    }
+    rotateTicker();
+
+    function updateClock() {
+      const now = new Date();
+      const h = now.getHours().toString().padStart(2, '0');
+      const m = now.getMinutes().toString().padStart(2, '0');
+      document.getElementById("clock").textContent = h + ":" + m;
+    }
+    setInterval(updateClock, 10000);
+    updateClock();
+  </script>
+
+  <script src="https://static.elfsight.com/platform/platform.js" async></script>
+</body>
+</html>
