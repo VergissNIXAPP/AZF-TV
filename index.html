@@ -40,37 +40,92 @@ var jsnewsconf = {"bd":"000000","bg":"ffffff","hl":"333333","hb":"cc0000","lk":"
 
   <script>
     const mediaItems = [
-      { type: 'video', src: 'Video5.mp4' },
-      { type: 'google-reviews' }, 
-      { type: 'weather' },
-      { type: 'image', src: 'grün.jpg' },
-      { type: 'video', src: 'tiguan.mp4' },
-      { type: 'news' },
-      { type: 'google-reviews' }, 
-      { type: 'video', src: 'Video2.mp4' },
-      { type: 'image', src: 'zero.jpg' },
-      { type: 'weather' },
-      { type: 'video', src: 'Video1.mp4' },
-      { type: 'news' },
-      { type: 'google-reviews' },
-      { type: 'video', src: 't-roc.mp4' },
-      { type: 'image', src: 'calli.jpg' },
-      { type: 'google-reviews' }, 
-      { type: 'weather' },
-      { type: 'image', src: 'jahr.jpg' },
-      { type: 'video', src: 'tiguan.mp4' },
-      { type: 'news' },
-      { type: 'google-reviews' }, 
-      { type: 'video', src: 'Video3.mp4' },
-      { type: 'image', src: 'nu.jpg' },
-      { type: 'weather' },
-      { type: 'video', src: 'Video4.mp4' },
-      { type: 'news' },
-      { type: 'google-reviews' },
-      { type: 'video', src: 't-roc.mp4' },
-      { type: 'image', src: 'calli.jpg' },
-      { type: 'video', src: 'Video6.mp4' }
-    ];
+  {
+    "type": "video",
+    "src": "Video5.mp4"
+  },
+  {
+    "type": "image",
+    "src": "grün.jpg"
+  },
+  {
+    "type": "google-reviews"
+  },
+  {
+    "type": "video",
+    "src": "tiguan.mp4"
+  },
+  {
+    "type": "weather"
+  },
+  {
+    "type": "news"
+  },
+  {
+    "type": "video",
+    "src": "Video2.mp4"
+  },
+  {
+    "type": "image",
+    "src": "zero.jpg"
+  },
+  {
+    "type": "google-reviews"
+  },
+  {
+    "type": "video",
+    "src": "Video1.mp4"
+  },
+  {
+    "type": "weather"
+  },
+  {
+    "type": "news"
+  },
+  {
+    "type": "image",
+    "src": "calli.jpg"
+  },
+  {
+    "type": "google-reviews"
+  },
+  {
+    "type": "video",
+    "src": "t-roc.mp4"
+  },
+  {
+    "type": "image",
+    "src": "jahr.jpg"
+  },
+  {
+    "type": "weather"
+  },
+  {
+    "type": "news"
+  },
+  {
+    "type": "video",
+    "src": "Video3.mp4"
+  },
+  {
+    "type": "image",
+    "src": "nu.jpg"
+  },
+  {
+    "type": "google-reviews"
+  },
+  {
+    "type": "video",
+    "src": "Video4.mp4"
+  },
+  {
+    "type": "news"
+  },
+  {
+    "type": "video",
+    "src": "Video6.mp4"
+  }
+];
 
     function hideHeaderClock() {
       document.getElementById('clock')?.classList.add('hidden');
@@ -82,7 +137,7 @@ var jsnewsconf = {"bd":"000000","bg":"ffffff","hl":"333333","hb":"cc0000","lk":"
       document.querySelector('.glass-header')?.classList.remove('hidden');
     }
 
-    let shuffledItems = [...mediaItems].sort(() => 0.5 - Math.random());
+    let shuffledItems = [...mediaItems];
     let index = 0;
 
     function hideAll() {
@@ -133,17 +188,17 @@ var jsnewsconf = {"bd":"000000","bg":"ffffff","hl":"333333","hb":"cc0000","lk":"
           video.play().catch(() => setTimeout(showNextItem, 8000));
         }
 
-if (item.type === 'weather') {
-  document.querySelector('.glass-header')?.classList.add('hidden'); // Header ausblenden
-  document.getElementById('clock')?.classList.remove('hidden');     // Uhr eingeblendet lassen
-  const el = document.getElementById('weather');
-  el.style.display = 'flex';
-  el.style.opacity = 1;
-  setTimeout(() => {
-    document.querySelector('.glass-header')?.classList.remove('hidden'); // Header zurück
-    showNextItem();
-  }, 10000);
-}
+        if (item.type === 'weather') {
+          document.querySelector('.glass-header')?.classList.add('hidden');
+          document.getElementById('clock')?.classList.remove('hidden');
+          const el = document.getElementById('weather');
+          el.style.display = 'flex';
+          el.style.opacity = 1;
+          setTimeout(() => {
+            document.querySelector('.glass-header')?.classList.remove('hidden');
+            showNextItem();
+          }, 10000);
+        }
 
         if (item.type === 'news') {
           showHeaderClock();
@@ -164,7 +219,7 @@ if (item.type === 'weather') {
         index++;
         if (index >= shuffledItems.length) {
           index = 0;
-          shuffledItems = [...mediaItems].sort(() => 0.5 - Math.random());
+          shuffledItems = [...mediaItems];
         }
       }, 500);
     }
@@ -207,6 +262,31 @@ if (item.type === 'weather') {
     }
     setInterval(updateClock, 10000);
     updateClock();
+
+    // NEU: Fernbedienungs-Logik (OK-Button & Doppelklick)
+    let lastKeyTime = 0;
+    let inConfigurator = false;
+
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        const currentTime = new Date().getTime();
+        const timeDiff = currentTime - lastKeyTime;
+
+        if (timeDiff < 500) {
+          // Doppel-OK erkannt → zurück zu AZF-TV
+          if (inConfigurator) {
+            window.location.href = "index.html";
+          }
+        } else {
+          if (!inConfigurator) {
+            inConfigurator = true;
+            window.location.href = "https://www.volkswagen.de/de/models.html";
+          }
+        }
+
+        lastKeyTime = currentTime;
+      }
+    });
   </script>
 
   <script src="https://static.elfsight.com/platform/platform.js" async></script>

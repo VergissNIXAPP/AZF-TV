@@ -207,3 +207,10 @@ iframe, video {
   opacity: 0 !important;
   pointer-events: none;
 }
+
+
+/* Vergrößere NUR das RP News Fenster durch Skalierung */
+#news {
+  transform: scale(1.6);
+  transform-origin: center;
+}
