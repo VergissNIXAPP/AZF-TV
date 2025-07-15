@@ -1,5 +1,4 @@
-
-/* styles_neo_final_v2.css – jetzt mit F11-Toleranz (leicht über Bildschirm hinaus) */
+/* styles_neo_final_v2.css – coolere Version mit Glitch, Neon & Animation */
 
 * {
   margin: 0;
@@ -49,7 +48,7 @@ html, body {
   text-align: center;
   margin-bottom: 1rem;
   box-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
-  animation: fadePulse 4s infinite alternate;
+  animation: slideFade 1.5s ease-out forwards, fadePulse 4s infinite alternate;
   transition: opacity 0.5s ease-in-out;
 }
 
@@ -58,11 +57,26 @@ html, body {
   to { box-shadow: 0 0 40px rgba(255,255,255,0.15); }
 }
 
+@keyframes slideFade {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .tv-title {
   font-size: 2.3rem;
   font-weight: 800;
   color: #ffffff;
-  text-shadow: 0 0 10px rgba(255,255,255,0.2);
+  text-shadow:
+    0 0 5px #ffffff,
+    0 0 10px #ff0033,
+    0 0 20px #ff0033;
+  letter-spacing: 0.05em;
 }
 
 .tv-title span {
@@ -75,6 +89,15 @@ html, body {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   box-shadow: 0 0 8px rgba(255, 0, 64, 0.5);
+  animation: glitch 1s infinite;
+}
+
+@keyframes glitch {
+  0% { text-shadow: 2px 2px #ff00c8; }
+  25% { text-shadow: -2px -2px #00fff2; }
+  50% { text-shadow: 2px -2px #ff0033; }
+  75% { text-shadow: -2px 2px #00ff99; }
+  100% { text-shadow: 2px 2px #ff00c8; }
 }
 
 .subtitle {
@@ -83,9 +106,9 @@ html, body {
   margin-top: 0.5rem;
   font-weight: 500;
   text-shadow: 0 0 8px rgba(0,0,0,0.3);
+  letter-spacing: 0.04em;
 }
 
-/* Video-, Bild- & Review-Container */
 #player,
 #image-display,
 #weather,
@@ -102,7 +125,6 @@ html, body {
   transition: opacity 0.6s ease-in-out;
 }
 
-/* 📽️ Vollbild-Video */
 #player video {
   position: fixed;
   inset: 0;
@@ -114,7 +136,6 @@ html, body {
   z-index: 1;
 }
 
-/* 🖼️ Bildanzeige – mit zusätzlicher Breite & Höhe für echten Vollbildmodus */
 #image-display {
   inset: 0;
 }
@@ -166,6 +187,12 @@ iframe, video {
   letter-spacing: 0.04em;
   text-shadow: 0 0 6px rgba(0,0,0,0.4);
   z-index: 99999;
+  transition: opacity 0.4s ease-in-out;
+}
+
+#ticker.hidden {
+  opacity: 0 !important;
+  pointer-events: none;
 }
 
 @keyframes tickerBG {
@@ -194,11 +221,13 @@ iframe, video {
   background: rgba(0, 0, 0, 0.3);
   padding: 0.4rem 1.2rem;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  box-shadow:
+    0 0 5px #ff0033,
+    0 0 10px #ff0033,
+    0 0 15px #ff0033;
   z-index: 9999;
 }
 
-/* Versteckt Header bei aktiven Inhalten */
 .hidden-during-image {
   transition: opacity 0.5s ease-in-out;
 }
@@ -208,9 +237,14 @@ iframe, video {
   pointer-events: none;
 }
 
-
-/* Vergrößere NUR das RP News Fenster durch Skalierung */
 #news {
   transform: scale(1.6);
   transform-origin: center;
+}
+
+#particle-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
 }

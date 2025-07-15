@@ -127,15 +127,21 @@ var jsnewsconf = {"bd":"000000","bg":"ffffff","hl":"333333","hb":"cc0000","lk":"
   }
 ];
 
-    function hideHeaderClock() {
-      document.getElementById('clock')?.classList.add('hidden');
-      document.querySelector('.glass-header')?.classList.add('hidden');
-    }
+    function hideHeaderClock(hideTicker = true) {
+  document.getElementById('clock')?.classList.add('hidden');
+  document.querySelector('.glass-header')?.classList.add('hidden');
+  if (hideTicker) {
+    document.getElementById('ticker')?.classList.add('hidden');
+  }
+}
 
-    function showHeaderClock() {
-      document.getElementById('clock')?.classList.remove('hidden');
-      document.querySelector('.glass-header')?.classList.remove('hidden');
-    }
+    function showHeaderClock(showTicker = true) {
+  document.getElementById('clock')?.classList.remove('hidden');
+  // Header bleibt aus
+  if (showTicker) {
+    document.getElementById('ticker')?.classList.remove('hidden');
+  }
+}
 
     let shuffledItems = [...mediaItems];
     let index = 0;
@@ -162,25 +168,25 @@ var jsnewsconf = {"bd":"000000","bg":"ffffff","hl":"333333","hb":"cc0000","lk":"
 
       setTimeout(() => {
         if (item.type === 'image') {
-          hideHeaderClock();
+          hideHeaderClock(true);
           document.getElementById('image').src = item.src;
           const el = document.getElementById('image-display');
           el.style.display = 'flex';
           el.style.opacity = 1;
           setTimeout(() => {
-            showHeaderClock();
-            showNextItem();
+            showHeaderClock(true);
+            showNextItem(); // nach Wetter weiter ohne Header
           }, 8000);
         }
 
         if (item.type === 'video') {
-          hideHeaderClock();
+          hideHeaderClock(true);
           const video = document.getElementById('video');
           video.src = item.src;
           video.onended = showNextItem;
           video.onerror = () => {
             console.error("Fehler beim Abspielen:", item.src);
-            showNextItem();
+            showNextItem(); // nach Wetter weiter ohne Header
           };
           const el = document.getElementById('player');
           el.style.display = 'flex';
@@ -189,19 +195,21 @@ var jsnewsconf = {"bd":"000000","bg":"ffffff","hl":"333333","hb":"cc0000","lk":"
         }
 
         if (item.type === 'weather') {
-          document.querySelector('.glass-header')?.classList.add('hidden');
           document.getElementById('clock')?.classList.remove('hidden');
+          document.getElementById('ticker')?.classList.remove('hidden');
+          document.querySelector('.glass-header')?.classList.add('hidden');
           const el = document.getElementById('weather');
           el.style.display = 'flex';
           el.style.opacity = 1;
           setTimeout(() => {
-            document.querySelector('.glass-header')?.classList.remove('hidden');
             showNextItem();
           }, 10000);
-        }
+}
 
         if (item.type === 'news') {
-          showHeaderClock();
+          document.getElementById('clock')?.classList.remove('hidden');
+          document.querySelector('.glass-header')?.classList.remove('hidden');
+          document.getElementById('ticker')?.classList.remove('hidden');
           const el = document.getElementById('news');
           el.style.display = 'flex';
           el.style.opacity = 1;
@@ -209,7 +217,7 @@ var jsnewsconf = {"bd":"000000","bg":"ffffff","hl":"333333","hb":"cc0000","lk":"
         }
 
         if (item.type === 'google-reviews') {
-          hideHeaderClock();
+          hideHeaderClock(false);
           const el = document.getElementById('google-reviews');
           el.style.display = 'flex';
           el.style.opacity = 1;
